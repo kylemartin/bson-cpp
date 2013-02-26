@@ -17,10 +17,13 @@
 
 #pragma once
 
-#include <boost/scoped_array.hpp>
+#include <string.h>
+
 #include <iostream>
 #include <sstream>
 #include <string>
+
+#include <boost/scoped_array.hpp>
 
 namespace base64 {
 
