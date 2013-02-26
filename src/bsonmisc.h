@@ -141,8 +141,12 @@ namespace bson {
     // definitions in bsonobjbuilder.h b/c of incomplete types
 
     // Utility class to implement BSON( key << val ) as described above.
-    class BSONObjBuilderValueStream : public boost::noncopyable {
+    class BSONObjBuilderValueStream {
     public:
+
+        BSONObjBuilderValueStream(const BSONObjBuilderValueStream&) = delete;
+        BSONObjBuilderValueStream& operator= (const BSONObjBuilderValueStream&) = delete;
+
         friend class Labeler;
         BSONObjBuilderValueStream( BSONObjBuilder * builder );
 

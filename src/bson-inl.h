@@ -108,10 +108,9 @@ namespace bson {
        getOwned() method.  the presumption being that is better.
     */
     inline NOINLINE_DECL BSONObj BSONObj::copy() const {
-        Holder *h = (Holder*) malloc(objsize() + sizeof(unsigned));
-        h->zero();
-        memcpy(h->data, objdata(), objsize());
-        return BSONObj(h);
+        char * mem = (char*)malloc(objsize() + sizeof(unsigned));
+        memcpy(mem, objdata(), objsize());
+        return BSONObj(Holder(mem));
     }
 
     inline BSONObj BSONObj::getOwned() const {

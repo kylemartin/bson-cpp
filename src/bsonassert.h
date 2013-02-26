@@ -34,7 +34,6 @@
 #include <memory>
 #include <iostream>
 #include <sstream>
-#include <boost/utility.hpp>
 
 #include "stringdata.h"
 

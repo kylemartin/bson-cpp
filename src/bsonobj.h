@@ -17,11 +17,12 @@
 
 #pragma once
 
-#include <boost/intrusive_ptr.hpp>
 #include <set>
 #include <list>
 #include <vector>
-#include "lib/atomic_int.h"
+#include <string>
+#include <memory>
+
 #include "util/builder.h"
 #include "stringdata.h"
 #include "bsonelement.h"
@@ -85,8 +86,8 @@ namespace bson {
          *  Use this constructor when you want BSONObj to free(holder) when it is no longer needed
          *  BSONObj::Holder has an extra 4 bytes for a ref-count before the start of the object
         */
-        class Holder;
-        explicit BSONObj(Holder* holder) {
+        typedef std::shared_ptr<char> Holder;
+        explicit BSONObj(Holder holder) {
             init(holder);
         }
 
@@ -446,38 +447,15 @@ namespace bson {
             b.appendBuf(reinterpret_cast<const void *>( objdata() ), objsize());
         }
 
-#pragma pack(1)
-        class Holder : boost::noncopyable {
-        private:
-            Holder(); // this class should never be explicitly created
-            mongo::AtomicUInt refCount;
-        public:
-            char data[4]; // start of object
-
-            void zero() { refCount.zero(); }
-
-            // these are called automatically by boost::intrusive_ptr
-            friend void intrusive_ptr_add_ref(Holder* h) { h->refCount++; }
-            friend void intrusive_ptr_release(Holder* h) {
-#if defined(_DEBUG) // cant use dassert or DEV here
-                assert((int)h->refCount > 0); // make sure we haven't already freed the buffer
-#endif
-                if(--(h->refCount) == 0){
-                    free(h);
-                }
-            }
-        };
-#pragma pack()
-
     private:
         const char *_objdata;
-        boost::intrusive_ptr< Holder > _holder;
+        Holder _holder;
 
         void _assertInvalid() const;
 
-        void init(Holder *holder) {
-            _holder = holder; // holder is now managed by intrusive_ptr
-            init(holder->data);
+        void init(Holder & holder) {
+            _holder = holder;
+            init(holder.get());
         }
         void init(const char *data) {
             _objdata = data;

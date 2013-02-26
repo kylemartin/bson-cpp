@@ -17,13 +17,12 @@
 
 #pragma once
 
-#include <string.h>
-
 #include <iostream>
 #include <sstream>
 #include <string>
-
-#include <boost/scoped_array.hpp>
+#include <memory>
+#include <cassert>
+#include <cstring>
 
 namespace base64 {
 
@@ -56,7 +55,7 @@ namespace base64 {
     private:
         const unsigned char * encode;
     public:
-        boost::scoped_array<unsigned char> decode;
+        std::unique_ptr<unsigned char[]> decode;
     };
 
     extern Alphabet alphabet;

@@ -19,7 +19,7 @@
  */
 
 /**
-   bo and its helpers
+   BSONObj and its helpers
 
    "BSON" stands for "binary JSON" -- ie a binary way to represent objects that
    would be represented in JSON (plus a few extensions useful for databases &
@@ -41,3 +41,4 @@
 #include "bsonobjiterator.h"
 #include "bson-inl.h"
 #include "bson_db.h"
+#include "util/json.h"

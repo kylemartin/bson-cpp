@@ -26,20 +26,18 @@
 
 #include "util/json.h"
 #include "util/optime.h"
-#include <boost/static_assert.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "ordering.h"
 #include "util/embedded_builder.h"
 
 
 // make sure our assumptions are valid
-BOOST_STATIC_ASSERT( sizeof(short) == 2 );
-BOOST_STATIC_ASSERT( sizeof(int) == 4 );
-BOOST_STATIC_ASSERT( sizeof(long long) == 8 );
-BOOST_STATIC_ASSERT( sizeof(double) == 8 );
-BOOST_STATIC_ASSERT( sizeof(bson::Date_t) == 8 );
-BOOST_STATIC_ASSERT( sizeof(bson::OID) == 12 );
+static_assert( sizeof(short) == 2 ,"sizeof value not what was expected");
+static_assert( sizeof(int) == 4 ,"sizeof value not what was expected");
+static_assert( sizeof(long long) == 8 ,"sizeof value not what was expected");
+static_assert( sizeof(double) == 8 ,"sizeof value not what was expected");
+static_assert( sizeof(bson::Date_t) == 8 ,"sizeof value not what was expected");
+static_assert( sizeof(bson::OID) == 12 ,"sizeof value not what was expected");
 
 //TODO(jbenet) fix these.
 #define out() std::cout
@@ -771,7 +769,7 @@ namespace bson {
         return -1;
     }
 
-    BSONObj staticNull = fromjson( "{'':null}" );
+    BSONObj staticNull = BSONObjBuilder().appendNull("").obj();
 
     /* well ordered compare */
     int BSONObj::woSortOrder(const BSONObj& other, const BSONObj& sortKey ,
@@ -1334,11 +1332,11 @@ namespace bson {
         }
 
         try {
-            long long num = boost::lexical_cast<long long>( data );
+            long long num = stoll(data);
             append( fieldName , num );
             return true;
         }
-        catch(boost::bad_lexical_cast &) {
+        catch(...){
             return false;
         }
 

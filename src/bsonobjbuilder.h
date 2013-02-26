@@ -80,8 +80,12 @@ namespace bson {
     /** Utility for creating a BSONObj.
         See also the BSON() and BSON_ARRAY() macros.
     */
-    class BSONObjBuilder : boost::noncopyable {
+    class BSONObjBuilder {
     public:
+      // Make this class non-copyable
+      BSONObjBuilder(const BSONObjBuilder&) = delete;
+      BSONObjBuilder& operator= (const BSONObjBuilder&) = delete;
+
         /** @param initsize this is just a hint as to the final size of the
             object */
         BSONObjBuilder(int initsize=512) : _b(_buf), _buf(initsize + sizeof(unsigned)),
@@ -576,7 +580,7 @@ namespace bson {
             bool own = owned();
             massert( 10335 , "builder does not own memory", own );
             doneFast();
-            BSONObj::Holder* h = (BSONObj::Holder*)_b.buf();
+            BSONObj::Holder h(_b.buf());
             decouple(); // sets _b.buf() to NULL
             return BSONObj(h);
         }
@@ -707,8 +711,11 @@ namespace bson {
         static const string numStrs[100]; // cache of 0 to 99 inclusive
     };
 
-    class BSONArrayBuilder : boost::noncopyable {
+    class BSONArrayBuilder {
     public:
+        BSONArrayBuilder(const BSONArrayBuilder&) = delete;
+        BSONArrayBuilder& operator= (const BSONArrayBuilder&) = delete;
+
         BSONArrayBuilder() : _i(0), _b() {}
         BSONArrayBuilder( BufBuilder &_b ) : _i(0), _b(_b) {}
         BSONArrayBuilder( int initialSize ) : _i(0), _b(initialSize) {}

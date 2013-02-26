@@ -16,7 +16,7 @@
 *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define BOOST_SPIRIT_THREADSAFE
+//#define BOOST_SPIRIT_THREADSAFE
 //#if BOOST_VERSION >= 103800
 #if true
 #define BOOST_SPIRIT_USE_OLD_NAMESPACE
@@ -38,7 +38,10 @@ using namespace boost::spirit;
 
 namespace bson {
 
-    struct ObjectBuilder : boost::noncopyable {
+    struct ObjectBuilder {
+        ObjectBuilder() = default;
+        ObjectBuilder(const ObjectBuilder&) = delete;
+        ObjectBuilder& operator= (const ObjectBuilder&) = delete;
         ~ObjectBuilder() {
             unsigned i = builders.size();
             if ( i ) {
