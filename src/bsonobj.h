@@ -77,8 +77,8 @@ namespace bson {
         /** Construct a BSONObj from data in the proper format.
         * owned = whether this object owns this buffer.
         */
-        explicit BSONObj(const char *msgdata) {
-          init(msgdata);
+        explicit BSONObj(const char *msgdata, bool assert_if_invalid = true) {
+          init(msgdata, assert_if_invalid);
         }
 
         /** Construct a BSONObj from data in the proper format.
@@ -481,9 +481,9 @@ namespace bson {
             _holder = holder; // holder is now managed by intrusive_ptr
             init(holder->data);
         }
-        void init(const char *data) {
+        void init(const char *data, bool assert_if_invalid = true) {
             _objdata = data;
-            if ( !isValid() )
+            if ( !isValid() && assert_if_invalid )
                 _assertInvalid();
         }
 
